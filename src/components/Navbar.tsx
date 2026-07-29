@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import Logo from "./Logo";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -9,13 +10,22 @@ export default function Navbar() {
     { href: "/", label: "Ana Səhifə" },
     { href: "/about", label: "Haqqımızda" },
     { href: "/projects", label: "Layihələr" },
+    { href: "/faq", label: "FAQ" },
   ];
 
   return (
     <header className="sticky top-0 z-50 bg-ink border-b border-line">
       <nav className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
-        <Link href="/" className="font-display text-lg text-paper tracking-tight">
-          Şirkət Adı
+        <Link href="/" className="flex items-center gap-3">
+          <Logo variant="white" />
+          <span className="flex flex-col leading-none">
+            <span className="font-display text-lg text-paper tracking-tight">
+              Loomtra
+            </span>
+            <span className="font-mono text-[10px] tracking-widest text-accent uppercase">
+              Web Technologies
+            </span>
+          </span>
         </Link>
 
         {/* Desktop menu */}
@@ -24,9 +34,10 @@ export default function Navbar() {
             <Link
               key={l.href}
               href={l.href}
-              className="text-sm text-paper/80 hover:text-accent transition-colors"
+              className="group relative py-1 text-sm text-paper/80 hover:text-paper transition-colors duration-300"
             >
               {l.label}
+              <span className="absolute left-0 -bottom-0.5 h-[1.5px] w-full origin-left scale-x-0 bg-accent transition-transform duration-300 ease-out group-hover:scale-x-100" />
             </Link>
           ))}
         </div>
@@ -34,7 +45,7 @@ export default function Navbar() {
         {/* Mobile toggle */}
         <button
           onClick={() => setOpen(!open)}
-          className="md:hidden text-paper p-2 -mr-2"
+          className="md:hidden text-paper p-2 -mr-2 transition-colors duration-300 hover:text-accent"
           aria-label="Menyunu aç/bağla"
           aria-expanded={open}
         >
@@ -58,7 +69,7 @@ export default function Navbar() {
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="text-paper/90 text-base"
+              className="text-paper/90 text-base transition-colors duration-300 hover:text-accent"
             >
               {l.label}
             </Link>

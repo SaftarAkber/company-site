@@ -50,6 +50,8 @@ prisma/
 public/
   file.svg
   globe.svg
+  logo-black.png
+  logo-white.png
   next.svg
   vercel.svg
   window.svg
@@ -65,6 +67,10 @@ src/
       admin/
         login/
           route.ts
+        logout/
+          route.ts
+    faq/
+      page.tsx
     projects/
       page.tsx
     favicon.ico
@@ -73,14 +79,18 @@ src/
     page.tsx
   components/
     FadeIn.tsx
+    FaqAccordion.tsx
     Footer.tsx
     Hero.tsx
+    Logo.tsx
+    Marquee.tsx
     MarqueeText.tsx
     Navbar.tsx
     ProjectCarousel.tsx
     ProjectsGrid.tsx
   lib/
     prisma.ts
+    session.ts
   middleware.ts
 .gitignore
 AGENTS.md
@@ -95,6 +105,115 @@ tsconfig.json
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path="src/app/faq/page.tsx">
+import FadeIn from "@/components/FadeIn";
+import FaqAccordion from "@/components/FaqAccordion";
+
+export default function FAQ() {
+  return (
+    <section className="max-w-4xl mx-auto px-6 py-20">
+      <FadeIn>
+        <p className="font-mono text-xs tracking-widest text-accent uppercase mb-4">Suallar</p>
+        <h1 className="font-display text-3xl sm:text-4xl mb-4">Tez-tez verilən suallar</h1>
+        <p className="text-graphite/60 max-w-xl mb-12">
+          Ən çox soruşulan sualların cavablarını burada tapa bilərsən. Başqa sualın varsa,
+          bizimlə birbaşa əlaqə saxlaya bilərsən.
+        </p>
+      </FadeIn>
+
+      <FaqAccordion />
+    </section>
+  );
+}
+</file>
+
+<file path="src/components/FaqAccordion.tsx">
+"use client";
+import { useState } from "react";
+
+export type FaqItem = { q: string; a: string };
+
+export const faqs: FaqItem[] = [
+  {
+    q: "Layihə üçün orta hazırlanma müddəti nə qədərdir?",
+    a: "Layihənin həcmindən asılı olaraq dəyişir. Sadə bir sayt (landing page) adətən 1-2 həftəyə, daha kompleks veb tətbiqlər isə 4-8 həftəyə hazır olur. Dəqiq müddəti ilkin görüşdən sonra sənə təqdim edirik.",
+  },
+  {
+    q: "Qiymətləndirmə necə aparılır?",
+    a: "Qiymət, layihənin funksionallığından, dizayn tələblərindən və inteqrasiya ehtiyaclarından asılı olaraq fərdi hesablanır. Pulsuz ilkin konsultasiya zamanı sənə təxmini büdcə təqdim edirik.",
+  },
+  {
+    q: "Hazır saytın dəstəyi (support) var?",
+    a: "Bəli. Təhvil verildikdən sonra da texniki dəstək, yeniləmələr və təhlükəsizlik yamaqları üçün aylıq dəstək paketlərimiz mövcuddur.",
+  },
+  {
+    q: "Hansı texnologiyalardan istifadə edirsiniz?",
+    a: "Əsasən Next.js, React, TypeScript və Tailwind CSS üzərində müasir, sürətli və SEO-dostu veb saytlar qururuq. Backend tərəfdə ehtiyaca görə Prisma və müxtəlif verilənlər bazası həllərindən istifadə edirik.",
+  },
+  {
+    q: "Mövcud saytımı yeniləmək mümkündürmü?",
+    a: "Əlbəttə. Mövcud saytınızı analiz edib, performans, dizayn və ya funksionallıq baxımından yeniləmə təklifləri hazırlaya bilərik.",
+  },
+  {
+    q: "Ödəniş şərtləri necədir?",
+    a: "Adətən layihə başlamazdan əvvəl qismən ön ödəniş, təhvil zamanı isə qalan hissə tələb olunur. Böyük layihələr üçün mərhələli ödəniş planı da təklif edirik.",
+  },
+];
+
+export default function FaqAccordion({ items = faqs }: { items?: FaqItem[] }) {
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  return (
+    <div className="flex flex-col divide-y divide-line-light border-t border-b border-line-light">
+      {items.map((item, i) => {
+        const isOpen = openIndex === i;
+        return (
+          <div key={item.q}>
+            <button
+              onClick={() => setOpenIndex(isOpen ? null : i)}
+              className="w-full flex items-center justify-between gap-4 py-5 text-left group"
+            >
+              <span className="font-display text-base sm:text-lg text-graphite transition-colors duration-300 group-hover:text-accent">
+                {item.q}
+              </span>
+              <span
+                className={`shrink-0 w-8 h-8 rounded-full border border-line-light flex items-center justify-center text-accent transition-transform duration-300 ${
+                  isOpen ? "rotate-45" : ""
+                }`}
+              >
+                +
+              </span>
+            </button>
+            <div
+              className={`grid transition-all duration-300 ease-out ${
+                isOpen ? "grid-rows-[1fr] opacity-100 pb-6" : "grid-rows-[0fr] opacity-0"
+              }`}
+            >
+              <div className="overflow-hidden">
+                <p className="text-graphite/70 leading-relaxed max-w-2xl">{item.a}</p>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/Logo.tsx">
+export default function Logo({
+  variant = "white",
+  className = "",
+}: {
+  variant?: "white" | "black";
+  className?: string;
+}) {
+  const src = variant === "white" ? "/logo-white.png" : "/logo-black.png";
+  return <img src={src} alt="Loomtra" className={`h-9 w-auto ${className}`} />;
+}
+</file>
 
 <file path="prisma/migrations/20260715131820_init/migration.sql">
 -- CreateTable
@@ -132,6 +251,26 @@ model Project {
   link        String?
   createdAt   DateTime @default(now())
 }
+</file>
+
+<file path="public/file.svg">
+<svg fill="none" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M14.5 13.5V5.41a1 1 0 0 0-.3-.7L9.8.29A1 1 0 0 0 9.08 0H1.5v13.5A2.5 2.5 0 0 0 4 16h8a2.5 2.5 0 0 0 2.5-2.5m-1.5 0v-7H8v-5H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1M9.5 5V2.12L12.38 5zM5.13 5h-.62v1.25h2.12V5zm-.62 3h7.12v1.25H4.5zm.62 3h-.62v1.25h7.12V11z" clip-rule="evenodd" fill="#666" fill-rule="evenodd"/></svg>
+</file>
+
+<file path="public/globe.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g clip-path="url(#a)"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.27 14.1a6.5 6.5 0 0 0 3.67-3.45q-1.24.21-2.7.34-.31 1.83-.97 3.1M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.48-1.52a7 7 0 0 1-.96 0H7.5a4 4 0 0 1-.84-1.32q-.38-.89-.63-2.08a40 40 0 0 0 3.92 0q-.25 1.2-.63 2.08a4 4 0 0 1-.84 1.31zm2.94-4.76q1.66-.15 2.95-.43a7 7 0 0 0 0-2.58q-1.3-.27-2.95-.43a18 18 0 0 1 0 3.44m-1.27-3.54a17 17 0 0 1 0 3.64 39 39 0 0 1-4.3 0 17 17 0 0 1 0-3.64 39 39 0 0 1 4.3 0m1.1-1.17q1.45.13 2.69.34a6.5 6.5 0 0 0-3.67-3.44q.65 1.26.98 3.1M8.48 1.5l.01.02q.41.37.84 1.31.38.89.63 2.08a40 40 0 0 0-3.92 0q.25-1.2.63-2.08a4 4 0 0 1 .85-1.32 7 7 0 0 1 .96 0m-2.75.4a6.5 6.5 0 0 0-3.67 3.44 29 29 0 0 1 2.7-.34q.31-1.83.97-3.1M4.58 6.28q-1.66.16-2.95.43a7 7 0 0 0 0 2.58q1.3.27 2.95.43a18 18 0 0 1 0-3.44m.17 4.71q-1.45-.12-2.69-.34a6.5 6.5 0 0 0 3.67 3.44q-.65-1.27-.98-3.1" fill="#666"/></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h16v16H0z"/></clipPath></defs></svg>
+</file>
+
+<file path="public/next.svg">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 394 80"><path fill="#000" d="M262 0h68.5v12.7h-27.2v66.6h-13.6V12.7H262V0ZM149 0v12.7H94v20.4h44.3v12.6H94v21h55v12.6H80.5V0h68.7zm34.3 0h-17.8l63.8 79.4h17.9l-32-39.7 32-39.6h-17.9l-23 28.6-23-28.6zm18.3 56.7-9-11-27.1 33.7h17.8l18.3-22.7z"/><path fill="#000" d="M81 79.3 17 0H0v79.3h13.6V17l50.2 62.3H81Zm252.6-.4c-1 0-1.8-.4-2.5-1s-1.1-1.6-1.1-2.6.3-1.8 1-2.5 1.6-1 2.6-1 1.8.3 2.5 1a3.4 3.4 0 0 1 .6 4.3 3.7 3.7 0 0 1-3 1.8zm23.2-33.5h6v23.3c0 2.1-.4 4-1.3 5.5a9.1 9.1 0 0 1-3.8 3.5c-1.6.8-3.5 1.3-5.7 1.3-2 0-3.7-.4-5.3-1s-2.8-1.8-3.7-3.2c-.9-1.3-1.4-3-1.4-5h6c.1.8.3 1.6.7 2.2s1 1.2 1.6 1.5c.7.4 1.5.5 2.4.5 1 0 1.8-.2 2.4-.6a4 4 0 0 0 1.6-1.8c.3-.8.5-1.8.5-3V45.5zm30.9 9.1a4.4 4.4 0 0 0-2-3.3 7.5 7.5 0 0 0-4.3-1.1c-1.3 0-2.4.2-3.3.5-.9.4-1.6 1-2 1.6a3.5 3.5 0 0 0-.3 4c.3.5.7.9 1.3 1.2l1.8 1 2 .5 3.2.8c1.3.3 2.5.7 3.7 1.2a13 13 0 0 1 3.2 1.8 8.1 8.1 0 0 1 3 6.5c0 2-.5 3.7-1.5 5.1a10 10 0 0 1-4.4 3.5c-1.8.8-4.1 1.2-6.8 1.2-2.6 0-4.9-.4-6.8-1.2-2-.8-3.4-2-4.5-3.5a10 10 0 0 1-1.7-5.6h6a5 5 0 0 0 3.5 4.6c1 .4 2.2.6 3.4.6 1.3 0 2.5-.2 3.5-.6 1-.4 1.8-1 2.4-1.7a4 4 0 0 0 .8-2.4c0-.9-.2-1.6-.7-2.2a11 11 0 0 0-2.1-1.4l-3.2-1-3.8-1c-2.8-.7-5-1.7-6.6-3.2a7.2 7.2 0 0 1-2.4-5.7 8 8 0 0 1 1.7-5 10 10 0 0 1 4.3-3.5c2-.8 4-1.2 6.4-1.2 2.3 0 4.4.4 6.2 1.2 1.8.8 3.2 2 4.3 3.4 1 1.4 1.5 3 1.5 5h-5.8z"/></svg>
+</file>
+
+<file path="public/vercel.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1155 1000"><path d="m577.3 0 577.4 1000H0z" fill="#fff"/></svg>
+</file>
+
+<file path="public/window.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.5h13v10a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1zM0 1h16v11.5a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 0 12.5zm3.75 4.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5M7 4.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0m1.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5" fill="#666"/></svg>
 </file>
 
 <file path="src/app/about/page.tsx">
@@ -198,64 +337,56 @@ export default function About() {
 </file>
 
 <file path="src/app/admin/login/page.tsx">
-import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-async function addProject(formData: FormData) {
-  "use server";
-  await prisma.project.create({
-    data: {
-      title: formData.get("title") as string,
-      description: formData.get("description") as string,
-      imageUrl: formData.get("imageUrl") as string,
-      link: formData.get("link") as string,
-    },
-  });
-  revalidatePath("/admin");
-  revalidatePath("/projects");
-}
+export default function AdminLogin() {
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-async function deleteProject(formData: FormData) {
-  "use server";
-  const id = Number(formData.get("id"));
-  await prisma.project.delete({ where: { id } });
-  revalidatePath("/admin");
-  revalidatePath("/projects");
-}
-
-export default async function AdminDashboard() {
-  const projects = await prisma.project.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    const res = await fetch("/api/admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password }),
+    });
+    setLoading(false);
+    if (res.ok) {
+      router.push("/admin");
+      router.refresh();
+    } else {
+      setError("Şifrə yanlışdır");
+    }
+  }
 
   return (
-    <div className="max-w-3xl mx-auto py-12 px-4">
-      <h1 className="text-2xl font-bold mb-6">Admin Panel</h1>
-
-      <form action={addProject} className="space-y-3 mb-10 border p-4 rounded">
-        <input name="title" placeholder="Başlıq" className="border p-2 w-full" required />
-        <textarea
-          name="description"
-          placeholder="Təsvir"
-          className="border p-2 w-full"
+    <div className="max-w-sm mx-auto py-24 px-4">
+      <h1 className="text-2xl font-bold mb-6">Admin Girişi</h1>
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Şifrə"
+          className="border p-2 w-full rounded"
           required
+          autoFocus
         />
-        <input name="imageUrl" placeholder="Şəkil URL (opsional)" className="border p-2 w-full" />
-        <input name="link" placeholder="Layihə linki (opsional)" className="border p-2 w-full" />
-        <button className="bg-black text-white px-4 py-2 rounded">Əlavə et</button>
+        {error && <p className="text-red-600 text-sm">{error}</p>}
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-ink text-paper px-4 py-2 rounded w-full transition-colors duration-300 hover:bg-accent disabled:opacity-50"
+        >
+          {loading ? "Yoxlanılır..." : "Daxil ol"}
+        </button>
       </form>
-
-      <div className="space-y-3">
-        {projects.map((p) => (
-          <div key={p.id} className="flex justify-between items-center border p-3 rounded">
-            <span>{p.title}</span>
-            <form action={deleteProject}>
-              <input type="hidden" name="id" value={p.id} />
-              <button className="text-red-600">Sil</button>
-            </form>
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
@@ -297,25 +428,45 @@ export default async function AdminDashboard() {
       <h1 className="text-2xl font-bold mb-6">Admin Panel</h1>
 
       <form action={addProject} className="space-y-3 mb-10 border p-4 rounded">
-        <input name="title" placeholder="Başlıq" className="border p-2 w-full" required />
+        <input
+          name="title"
+          placeholder="Başlıq"
+          className="border p-2 w-full"
+          required
+        />
         <textarea
           name="description"
           placeholder="Təsvir"
           className="border p-2 w-full"
           required
         />
-        <input name="imageUrl" placeholder="Şəkil URL (opsional)" className="border p-2 w-full" />
-        <input name="link" placeholder="Layihə linki (opsional)" className="border p-2 w-full" />
-        <button className="bg-black text-white px-4 py-2 rounded">Əlavə et</button>
+        <input
+          name="imageUrl"
+          placeholder="Şəkil URL (opsional)"
+          className="border p-2 w-full"
+        />
+        <input
+          name="link"
+          placeholder="Layihə linki (opsional)"
+          className="border p-2 w-full"
+        />
+        <button className="bg-ink text-paper px-4 py-2 rounded transition-colors duration-300 hover:bg-accent">
+          Əlavə et
+        </button>
       </form>
 
       <div className="space-y-3">
         {projects.map((p) => (
-          <div key={p.id} className="flex justify-between items-center border p-3 rounded">
+          <div
+            key={p.id}
+            className="flex justify-between items-center border p-3 rounded"
+          >
             <span>{p.title}</span>
             <form action={deleteProject}>
               <input type="hidden" name="id" value={p.id} />
-              <button className="text-red-600">Sil</button>
+              <button className="text-red-600 transition-colors duration-300 hover:text-red-400">
+                Sil
+              </button>
             </form>
           </div>
         ))}
@@ -327,21 +478,36 @@ export default async function AdminDashboard() {
 
 <file path="src/app/api/admin/login/route.ts">
 import { NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
+import { createSessionToken, SESSION_MAX_AGE } from "@/lib/session";
 
 export async function POST(req: Request) {
   const { password } = await req.json();
 
-  if (password === process.env.ADMIN_PASSWORD) {
-    const res = NextResponse.json({ ok: true });
-    res.cookies.set("admin_session", process.env.SESSION_SECRET!, {
-      httpOnly: true,
-      path: "/",
-      maxAge: 60 * 60 * 24,
-    });
-    return res;
+  const valid = await bcrypt.compare(password ?? "", process.env.ADMIN_PASSWORD_HASH!);
+  if (!valid) {
+    return NextResponse.json({ ok: false }, { status: 401 });
   }
 
-  return NextResponse.json({ ok: false }, { status: 401 });
+  const res = NextResponse.json({ ok: true });
+  res.cookies.set("admin_session", createSessionToken(), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: SESSION_MAX_AGE,
+  });
+  return res;
+}
+</file>
+
+<file path="src/app/api/admin/logout/route.ts">
+import { NextResponse } from "next/server";
+
+export async function POST() {
+  const res = NextResponse.json({ ok: true });
+  res.cookies.delete("admin_session");
+  return res;
 }
 </file>
 
@@ -379,16 +545,15 @@ export default async function Projects() {
 @import "tailwindcss";
 
 :root {
-  --ink: #10131a;
-  --paper: #f6f5f1;
-  --graphite: #1c1f26;
-  --accent: #b8863f;
-  --accent-2: #6c63ff;
-  --accent-3: #ff6b6b;
-  --line: #23262f;
-  --line-light: #e4e1d8;
+  --ink: #05080f;
+  --paper: #f5f8fc;
+  --graphite: #0d1826;
+  --accent: #2f6fed;
+  --accent-2: #1d4ed8;
+  --accent-3: #38bdf8;
+  --line: #17212f;
+  --line-light: #dde5f0;
 }
-
 @theme inline {
   --color-ink: var(--ink);
   --color-paper: var(--paper);
@@ -427,13 +592,6 @@ body {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
-.animate-marquee { animation: marquee 35s linear infinite; }
-.animate-marquee-fast { animation: marquee 18s linear infinite; }
-.marquee-wrap:hover .animate-marquee,
-.marquee-wrap:hover .animate-marquee-fast {
-  animation-play-state: paused;
-}
-
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-12px); }
@@ -474,8 +632,8 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Şirkət Adı",
-  description: "Şirkətimizin rəsmi saytı",
+  title: "Loomtra Web Technologies",
+  description: "Loomtra Web Technologies — rəqəmsal məhsul və veb həllər.",
 };
 
 export default function RootLayout({
@@ -505,9 +663,12 @@ import Hero from "@/components/Hero";
 import MarqueeText from "@/components/MarqueeText";
 import ProjectCarousel from "@/components/ProjectCarousel";
 import FadeIn from "@/components/FadeIn";
+import FaqAccordion, { faqs } from "@/components/FaqAccordion";
 
 export default async function Home() {
-  const projects = await prisma.project.findMany({ orderBy: { createdAt: "desc" } });
+  const projects = await prisma.project.findMany({
+    orderBy: { createdAt: "desc" },
+  });
 
   return (
     <>
@@ -521,9 +682,14 @@ export default async function Home() {
               <p className="font-mono text-xs tracking-widest text-accent uppercase mb-3">
                 Seçilmiş işlər
               </p>
-              <h2 className="font-display text-2xl sm:text-3xl">Son layihələrimiz</h2>
+              <h2 className="font-display text-2xl sm:text-3xl">
+                Son layihələrimiz
+              </h2>
             </div>
-            <Link href="/projects" className="text-sm text-graphite/60 hover:text-accent transition-colors">
+            <Link
+              href="/projects"
+              className="text-sm text-graphite/60 hover:text-accent transition-colors"
+            >
               Hamısına bax →
             </Link>
           </div>
@@ -541,9 +707,18 @@ export default async function Home() {
       <section className="bg-line-light/30 border-t border-line-light">
         <div className="max-w-6xl mx-auto px-6 py-20 grid grid-cols-1 sm:grid-cols-3 gap-10">
           {[
-            { title: "Keyfiyyət", desc: "Hər detala diqqət yetiririk, tələsik iş görmürük." },
-            { title: "Şəffaflıq", desc: "Prosesin hər addımında müştəri ilə açıq ünsiyyət." },
-            { title: "Sürət", desc: "Vaxtında təhvil, lazımsız gecikmə olmadan." },
+            {
+              title: "Keyfiyyət",
+              desc: "Hər detala diqqət yetiririk, tələsik iş görmürük.",
+            },
+            {
+              title: "Şəffaflıq",
+              desc: "Prosesin hər addımında müştəri ilə açıq ünsiyyət.",
+            },
+            {
+              title: "Sürət",
+              desc: "Vaxtında təhvil, lazımsız gecikmə olmadan.",
+            },
           ].map((item, i) => (
             <FadeIn key={item.title} delay={i * 0.1}>
               <h3 className="font-display text-xl mb-2">{item.title}</h3>
@@ -551,6 +726,29 @@ export default async function Home() {
             </FadeIn>
           ))}
         </div>
+      </section>
+
+      <section className="max-w-4xl mx-auto px-6 py-20 border-t border-line-light">
+        <FadeIn>
+          <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
+            <div>
+              <p className="font-mono text-xs tracking-widest text-accent uppercase mb-3">
+                Suallar
+              </p>
+              <h2 className="font-display text-2xl sm:text-3xl">
+                Tez-tez verilən suallar
+              </h2>
+            </div>
+            <Link
+              href="/faq"
+              className="text-sm text-graphite/60 hover:text-accent transition-colors"
+            >
+              Hamısına bax →
+            </Link>
+          </div>
+        </FadeIn>
+
+        <FaqAccordion items={faqs.slice(0, 4)} />
       </section>
     </>
   );
@@ -587,22 +785,29 @@ export default function FadeIn({
 </file>
 
 <file path="src/components/Footer.tsx">
+import Logo from "./Logo";
+
 export default function Footer() {
   return (
     <footer className="bg-ink border-t border-line">
       <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col md:flex-row md:items-end justify-between gap-8">
-        <div>
-          <p className="font-display text-xl text-paper mb-2">Şirkət Adı</p>
-          <p className="text-sm text-paper/60 max-w-sm">
-            Fikirlərdən nəticəyə — rəqəmsal məhsullar quraşdırırıq.
-          </p>
+        <div className="flex items-center gap-3">
+          <Logo variant="white" />
+          <div>
+            <p className="font-display text-xl text-paper mb-1">
+              Loomtra Web Technologies
+            </p>
+            <p className="text-sm text-paper/60 max-w-sm">
+              Fikirlərdən nəticəyə — rəqəmsal məhsullar quraşdırırıq.
+            </p>
+          </div>
         </div>
 
         <div className="flex flex-col gap-1 text-sm text-paper/60 md:text-right">
-          <a href="mailto:info@sirket.az" className="hover:text-accent transition-colors">
-            info@sirket.az
+          <a href="mailto:info@loomtra.az" className="transition-colors duration-300 hover:text-accent">
+            info@loomtra.az
           </a>
-          <span>© {new Date().getFullYear()} Şirkət Adı. Bütün hüquqlar qorunur.</span>
+          <span>© {new Date().getFullYear()} Loomtra Web Technologies. Bütün hüquqlar qorunur.</span>
         </div>
       </div>
     </footer>
@@ -675,13 +880,13 @@ export default function Hero() {
         >
           <Link
             href="/projects"
-            className="bg-accent text-ink px-6 py-3 rounded-full text-sm font-medium hover:scale-105 transition-transform"
+            className="bg-accent text-paper px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 hover:bg-accent-2 hover:scale-105"
           >
             Layihələrə bax
           </Link>
           <Link
             href="/about"
-            className="border border-paper/30 text-paper px-6 py-3 rounded-full text-sm font-medium hover:border-paper/60 hover:scale-105 transition-all"
+            className="border border-paper/30 text-paper px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 hover:bg-paper/10 hover:border-accent hover:text-accent hover:scale-105"
           >
             Haqqımızda
           </Link>
@@ -703,20 +908,117 @@ export default function Hero() {
 }
 </file>
 
-<file path="src/components/MarqueeText.tsx">
-export default function MarqueeText() {
-  const words = ["DİZAYN", "KOD", "STRATEGİYA", "BREND", "MƏHSUL", "İNNOVASİYA"];
-  const items = [...words, ...words, ...words];
+<file path="src/components/Marquee.tsx">
+"use client";
+import { useEffect, useRef, useState } from "react";
+
+export default function Marquee({
+  children,
+  speed = 50, // px/saniyə
+  className = "",
+  pauseOnHover = true,
+}: {
+  children: React.ReactNode;
+  speed?: number;
+  className?: string;
+  pauseOnHover?: boolean;
+}) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const posRef = useRef(0);
+  const pausedRef = useRef(false);
+  const [repeat, setRepeat] = useState(2);
+
+  // Ekran/konteyner enindən asılı olmayaraq məzmunu kifayət qədər təkrarla
+  useEffect(() => {
+    const wrap = wrapRef.current;
+    const track = trackRef.current;
+    if (!wrap || !track) return;
+
+    const calcRepeat = () => {
+      const oneSetWidth = track.scrollWidth / repeat;
+      const containerWidth = wrap.offsetWidth;
+      if (oneSetWidth === 0) return;
+      // Ən azı konteynerdən 2.5 qat geniş olsun ki, boşluq görünməsin
+      const needed = Math.ceil((containerWidth * 2.5) / oneSetWidth);
+      if (needed > repeat) setRepeat(needed);
+    };
+
+    calcRepeat();
+    const ro = new ResizeObserver(calcRepeat);
+    ro.observe(wrap);
+    return () => ro.disconnect();
+  }, [repeat]);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    let singleWidth = track.scrollWidth / repeat;
+    let rafId: number;
+    let last = performance.now();
+
+    const updateWidth = () => {
+      singleWidth = track.scrollWidth / repeat;
+    };
+    const ro = new ResizeObserver(updateWidth);
+    ro.observe(track);
+
+    const step = (now: number) => {
+      const dt = (now - last) / 1000;
+      last = now;
+
+      if (!pausedRef.current && singleWidth > 0) {
+        posRef.current -= speed * dt;
+        if (posRef.current <= -singleWidth) {
+          posRef.current += singleWidth;
+        }
+        track.style.transform = `translate3d(${posRef.current}px,0,0)`;
+      }
+      rafId = requestAnimationFrame(step);
+    };
+
+    rafId = requestAnimationFrame(step);
+    return () => {
+      cancelAnimationFrame(rafId);
+      ro.disconnect();
+    };
+  }, [speed, repeat]);
 
   return (
-    <div className="marquee-wrap bg-accent text-ink py-3 overflow-hidden border-y border-line">
-      <div className="flex w-max animate-marquee-fast">
-        {items.map((w, i) => (
+    <div
+      ref={wrapRef}
+      className={`overflow-hidden ${className}`}
+      onMouseEnter={() => pauseOnHover && (pausedRef.current = true)}
+      onMouseLeave={() => pauseOnHover && (pausedRef.current = false)}
+    >
+      <div ref={trackRef} className="flex w-max will-change-transform">
+        {Array.from({ length: repeat }).map((_, i) => (
+          <div key={i} className="flex shrink-0">
+            {children}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/MarqueeText.tsx">
+import Marquee from "./Marquee";
+
+export default function MarqueeText() {
+  const words = ["DİZAYN", "KOD", "STRATEGİYA", "BREND", "MƏHSUL", "İNNOVASİYA"];
+
+  return (
+    <div className="marquee-wrap bg-accent text-ink py-3 border-y border-line">
+      <Marquee speed={60}>
+        {words.map((w, i) => (
           <span key={i} className="font-mono text-sm font-medium px-6 whitespace-nowrap">
             {w} ✦
           </span>
         ))}
-      </div>
+      </Marquee>
     </div>
   );
 }
@@ -726,6 +1028,7 @@ export default function MarqueeText() {
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import Logo from "./Logo";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -734,13 +1037,22 @@ export default function Navbar() {
     { href: "/", label: "Ana Səhifə" },
     { href: "/about", label: "Haqqımızda" },
     { href: "/projects", label: "Layihələr" },
+    { href: "/faq", label: "FAQ" },
   ];
 
   return (
     <header className="sticky top-0 z-50 bg-ink border-b border-line">
       <nav className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
-        <Link href="/" className="font-display text-lg text-paper tracking-tight">
-          Şirkət Adı
+        <Link href="/" className="flex items-center gap-3">
+          <Logo variant="white" />
+          <span className="flex flex-col leading-none">
+            <span className="font-display text-lg text-paper tracking-tight">
+              Loomtra
+            </span>
+            <span className="font-mono text-[10px] tracking-widest text-accent uppercase">
+              Web Technologies
+            </span>
+          </span>
         </Link>
 
         {/* Desktop menu */}
@@ -749,9 +1061,10 @@ export default function Navbar() {
             <Link
               key={l.href}
               href={l.href}
-              className="text-sm text-paper/80 hover:text-accent transition-colors"
+              className="group relative py-1 text-sm text-paper/80 hover:text-paper transition-colors duration-300"
             >
               {l.label}
+              <span className="absolute left-0 -bottom-0.5 h-[1.5px] w-full origin-left scale-x-0 bg-accent transition-transform duration-300 ease-out group-hover:scale-x-100" />
             </Link>
           ))}
         </div>
@@ -759,7 +1072,7 @@ export default function Navbar() {
         {/* Mobile toggle */}
         <button
           onClick={() => setOpen(!open)}
-          className="md:hidden text-paper p-2 -mr-2"
+          className="md:hidden text-paper p-2 -mr-2 transition-colors duration-300 hover:text-accent"
           aria-label="Menyunu aç/bağla"
           aria-expanded={open}
         >
@@ -783,7 +1096,7 @@ export default function Navbar() {
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="text-paper/90 text-base"
+              className="text-paper/90 text-base transition-colors duration-300 hover:text-accent"
             >
               {l.label}
             </Link>
@@ -796,6 +1109,8 @@ export default function Navbar() {
 </file>
 
 <file path="src/components/ProjectCarousel.tsx">
+import Marquee from "./Marquee";
+
 type Project = {
   id: number;
   title: string;
@@ -806,15 +1121,14 @@ type Project = {
 
 export default function ProjectCarousel({ projects }: { projects: Project[] }) {
   if (projects.length === 0) return null;
-  const items = [...projects, ...projects];
 
   return (
-    <div className="marquee-wrap overflow-hidden -mx-6 px-6">
-      <div className="flex gap-6 w-max animate-marquee">
-        {items.map((p, i) => (
+    <div className="marquee-wrap -mx-6 px-6">
+      <Marquee speed={45}>
+        {projects.map((p) => (
           <div
-            key={`${p.id}-${i}`}
-            className="w-72 shrink-0 border border-line-light rounded-xl overflow-hidden bg-paper hover:-translate-y-1 transition-transform duration-300"
+            key={p.id}
+            className="w-72 shrink-0 mr-6 border border-line-light rounded-xl overflow-hidden bg-paper hover:-translate-y-1 transition-transform duration-300"
           >
             <img
               src={p.imageUrl || `https://picsum.photos/seed/project-${p.id}/600/400`}
@@ -827,7 +1141,7 @@ export default function ProjectCarousel({ projects }: { projects: Project[] }) {
             </div>
           </div>
         ))}
-      </div>
+      </Marquee>
     </div>
   );
 }
@@ -901,88 +1215,54 @@ export const prisma =
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 </file>
 
+<file path="src/lib/session.ts">
+import crypto from "crypto";
+
+const SECRET = process.env.SESSION_SECRET!;
+export const SESSION_MAX_AGE = 60 * 60 * 24; // 1 gün (saniyə)
+
+export function createSessionToken() {
+  const expires = Date.now() + SESSION_MAX_AGE * 1000;
+  const payload = String(expires);
+  const sig = crypto.createHmac("sha256", SECRET).update(payload).digest("hex");
+  return `${payload}.${sig}`;
+}
+
+export function verifySessionToken(token?: string | null) {
+  if (!token) return false;
+  const [payload, sig] = token.split(".");
+  if (!payload || !sig) return false;
+  const expected = crypto.createHmac("sha256", SECRET).update(payload).digest("hex");
+  const a = Buffer.from(sig);
+  const b = Buffer.from(expected);
+  if (a.length !== b.length) return false;
+  if (!crypto.timingSafeEqual(a, b)) return false;
+  return Date.now() < Number(payload); // vaxtı bitibsə etibarsız say
+}
+</file>
+
 <file path="src/middleware.ts">
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { verifySessionToken } from "@/lib/session";
+
+export const runtime = "nodejs"; // crypto modulu üçün lazımdır
 
 export function middleware(req: NextRequest) {
-  const isLoggedIn =
-    req.cookies.get("admin_session")?.value === process.env.SESSION_SECRET;
+  const token = req.cookies.get("admin_session")?.value;
+  const isLoggedIn = verifySessionToken(token);
   const isLoginPage = req.nextUrl.pathname === "/admin/login";
 
   if (req.nextUrl.pathname.startsWith("/admin") && !isLoggedIn && !isLoginPage) {
     return NextResponse.redirect(new URL("/admin/login", req.url));
   }
+  if (isLoginPage && isLoggedIn) {
+    return NextResponse.redirect(new URL("/admin", req.url));
+  }
   return NextResponse.next();
 }
 
 export const config = { matcher: ["/admin/:path*"] };
-</file>
-
-<file path="public/file.svg">
-<svg fill="none" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M14.5 13.5V5.41a1 1 0 0 0-.3-.7L9.8.29A1 1 0 0 0 9.08 0H1.5v13.5A2.5 2.5 0 0 0 4 16h8a2.5 2.5 0 0 0 2.5-2.5m-1.5 0v-7H8v-5H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1M9.5 5V2.12L12.38 5zM5.13 5h-.62v1.25h2.12V5zm-.62 3h7.12v1.25H4.5zm.62 3h-.62v1.25h7.12V11z" clip-rule="evenodd" fill="#666" fill-rule="evenodd"/></svg>
-</file>
-
-<file path="public/globe.svg">
-<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g clip-path="url(#a)"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.27 14.1a6.5 6.5 0 0 0 3.67-3.45q-1.24.21-2.7.34-.31 1.83-.97 3.1M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.48-1.52a7 7 0 0 1-.96 0H7.5a4 4 0 0 1-.84-1.32q-.38-.89-.63-2.08a40 40 0 0 0 3.92 0q-.25 1.2-.63 2.08a4 4 0 0 1-.84 1.31zm2.94-4.76q1.66-.15 2.95-.43a7 7 0 0 0 0-2.58q-1.3-.27-2.95-.43a18 18 0 0 1 0 3.44m-1.27-3.54a17 17 0 0 1 0 3.64 39 39 0 0 1-4.3 0 17 17 0 0 1 0-3.64 39 39 0 0 1 4.3 0m1.1-1.17q1.45.13 2.69.34a6.5 6.5 0 0 0-3.67-3.44q.65 1.26.98 3.1M8.48 1.5l.01.02q.41.37.84 1.31.38.89.63 2.08a40 40 0 0 0-3.92 0q.25-1.2.63-2.08a4 4 0 0 1 .85-1.32 7 7 0 0 1 .96 0m-2.75.4a6.5 6.5 0 0 0-3.67 3.44 29 29 0 0 1 2.7-.34q.31-1.83.97-3.1M4.58 6.28q-1.66.16-2.95.43a7 7 0 0 0 0 2.58q1.3.27 2.95.43a18 18 0 0 1 0-3.44m.17 4.71q-1.45-.12-2.69-.34a6.5 6.5 0 0 0 3.67 3.44q-.65-1.27-.98-3.1" fill="#666"/></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h16v16H0z"/></clipPath></defs></svg>
-</file>
-
-<file path="public/next.svg">
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 394 80"><path fill="#000" d="M262 0h68.5v12.7h-27.2v66.6h-13.6V12.7H262V0ZM149 0v12.7H94v20.4h44.3v12.6H94v21h55v12.6H80.5V0h68.7zm34.3 0h-17.8l63.8 79.4h17.9l-32-39.7 32-39.6h-17.9l-23 28.6-23-28.6zm18.3 56.7-9-11-27.1 33.7h17.8l18.3-22.7z"/><path fill="#000" d="M81 79.3 17 0H0v79.3h13.6V17l50.2 62.3H81Zm252.6-.4c-1 0-1.8-.4-2.5-1s-1.1-1.6-1.1-2.6.3-1.8 1-2.5 1.6-1 2.6-1 1.8.3 2.5 1a3.4 3.4 0 0 1 .6 4.3 3.7 3.7 0 0 1-3 1.8zm23.2-33.5h6v23.3c0 2.1-.4 4-1.3 5.5a9.1 9.1 0 0 1-3.8 3.5c-1.6.8-3.5 1.3-5.7 1.3-2 0-3.7-.4-5.3-1s-2.8-1.8-3.7-3.2c-.9-1.3-1.4-3-1.4-5h6c.1.8.3 1.6.7 2.2s1 1.2 1.6 1.5c.7.4 1.5.5 2.4.5 1 0 1.8-.2 2.4-.6a4 4 0 0 0 1.6-1.8c.3-.8.5-1.8.5-3V45.5zm30.9 9.1a4.4 4.4 0 0 0-2-3.3 7.5 7.5 0 0 0-4.3-1.1c-1.3 0-2.4.2-3.3.5-.9.4-1.6 1-2 1.6a3.5 3.5 0 0 0-.3 4c.3.5.7.9 1.3 1.2l1.8 1 2 .5 3.2.8c1.3.3 2.5.7 3.7 1.2a13 13 0 0 1 3.2 1.8 8.1 8.1 0 0 1 3 6.5c0 2-.5 3.7-1.5 5.1a10 10 0 0 1-4.4 3.5c-1.8.8-4.1 1.2-6.8 1.2-2.6 0-4.9-.4-6.8-1.2-2-.8-3.4-2-4.5-3.5a10 10 0 0 1-1.7-5.6h6a5 5 0 0 0 3.5 4.6c1 .4 2.2.6 3.4.6 1.3 0 2.5-.2 3.5-.6 1-.4 1.8-1 2.4-1.7a4 4 0 0 0 .8-2.4c0-.9-.2-1.6-.7-2.2a11 11 0 0 0-2.1-1.4l-3.2-1-3.8-1c-2.8-.7-5-1.7-6.6-3.2a7.2 7.2 0 0 1-2.4-5.7 8 8 0 0 1 1.7-5 10 10 0 0 1 4.3-3.5c2-.8 4-1.2 6.4-1.2 2.3 0 4.4.4 6.2 1.2 1.8.8 3.2 2 4.3 3.4 1 1.4 1.5 3 1.5 5h-5.8z"/></svg>
-</file>
-
-<file path="public/vercel.svg">
-<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1155 1000"><path d="m577.3 0 577.4 1000H0z" fill="#fff"/></svg>
-</file>
-
-<file path="public/window.svg">
-<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.5h13v10a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1zM0 1h16v11.5a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 0 12.5zm3.75 4.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5M7 4.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0m1.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5" fill="#666"/></svg>
-</file>
-
-<file path=".gitignore">
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# env files (can opt-in for committing if needed)
-.env*
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-/app/generated/prisma
 </file>
 
 <file path="AGENTS.md">
@@ -1026,40 +1306,6 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
-</file>
-
-<file path="package.json">
-{
-  "name": "company-site",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
-  },
-  "dependencies": {
-    "@prisma/client": "^5.22.0",
-    "bcryptjs": "^3.0.3",
-    "framer-motion": "^12.42.2",
-    "next": "^16.2.11",
-    "prisma": "^5.22.0",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/bcryptjs": "^2.4.6",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.10",
-    "tailwindcss": "^4",
-    "typescript": "^5"
-  }
-}
 </file>
 
 <file path="postcss.config.mjs">
@@ -1109,6 +1355,86 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+</file>
+
+<file path=".gitignore">
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+/app/generated/prisma
+</file>
+
+<file path="package.json">
+{
+  "name": "company-site",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "bcryptjs": "^3.0.3",
+    "framer-motion": "^12.42.2",
+    "next": "^16.2.11",
+    "prisma": "^5.22.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.10",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
 </file>
 
 <file path="tsconfig.json">

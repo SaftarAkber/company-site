@@ -1,16 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #10131a;
-  --paper: #f6f5f1;
-  --graphite: #1c1f26;
-  --accent: #b8863f;
-  --accent-2: #6c63ff;
-  --accent-3: #ff6b6b;
-  --line: #23262f;
-  --line-light: #e4e1d8;
+  --ink: #05080f;
+  --paper: #f5f8fc;
+  --graphite: #0d1826;
+  --accent: #2f6fed;
+  --accent-2: #1d4ed8;
+  --accent-3: #38bdf8;
+  --line: #17212f;
+  --line-light: #dde5f0;
 }
-
 @theme inline {
   --color-ink: var(--ink);
   --color-paper: var(--paper);

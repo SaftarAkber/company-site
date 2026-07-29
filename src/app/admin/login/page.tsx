@@ -43,7 +43,7 @@ export default function AdminLogin() {
         <button
           type="submit"
           disabled={loading}
-          className="bg-black text-white px-4 py-2 rounded w-full disabled:opacity-50"
+          className="bg-ink text-paper px-4 py-2 rounded w-full transition-colors duration-300 hover:bg-accent disabled:opacity-50"
         >
           {loading ? "Yoxlanılır..." : "Daxil ol"}
         </button>

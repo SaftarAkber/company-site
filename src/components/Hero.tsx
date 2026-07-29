@@ -62,13 +62,13 @@ export default function Hero() {
         >
           <Link
             href="/projects"
-            className="bg-accent text-ink px-6 py-3 rounded-full text-sm font-medium hover:scale-105 transition-transform"
+            className="bg-accent text-paper px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 hover:bg-accent-2 hover:scale-105"
           >
             Layihələrə bax
           </Link>
           <Link
             href="/about"
-            className="border border-paper/30 text-paper px-6 py-3 rounded-full text-sm font-medium hover:border-paper/60 hover:scale-105 transition-all"
+            className="border border-paper/30 text-paper px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 hover:bg-paper/10 hover:border-accent hover:text-accent hover:scale-105"
           >
             Haqqımızda
           </Link>

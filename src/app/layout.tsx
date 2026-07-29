@@ -22,8 +22,8 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Şirkət Adı",
-  description: "Şirkətimizin rəsmi saytı",
+  title: "Loomtra Web Technologies",
+  description: "Loomtra Web Technologies — rəqəmsal məhsul və veb həllər.",
 };
 
 export default function RootLayout({
