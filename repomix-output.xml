@@ -89,6 +89,7 @@ src/
     ProjectCarousel.tsx
     ProjectsGrid.tsx
   lib/
+    faqs.ts
     prisma.ts
     session.ts
   middleware.ts
@@ -105,115 +106,6 @@ tsconfig.json
 
 <files>
 This section contains the contents of the repository's files.
-
-<file path="src/app/faq/page.tsx">
-import FadeIn from "@/components/FadeIn";
-import FaqAccordion from "@/components/FaqAccordion";
-
-export default function FAQ() {
-  return (
-    <section className="max-w-4xl mx-auto px-6 py-20">
-      <FadeIn>
-        <p className="font-mono text-xs tracking-widest text-accent uppercase mb-4">Suallar</p>
-        <h1 className="font-display text-3xl sm:text-4xl mb-4">Tez-tez verilən suallar</h1>
-        <p className="text-graphite/60 max-w-xl mb-12">
-          Ən çox soruşulan sualların cavablarını burada tapa bilərsən. Başqa sualın varsa,
-          bizimlə birbaşa əlaqə saxlaya bilərsən.
-        </p>
-      </FadeIn>
-
-      <FaqAccordion />
-    </section>
-  );
-}
-</file>
-
-<file path="src/components/FaqAccordion.tsx">
-"use client";
-import { useState } from "react";
-
-export type FaqItem = { q: string; a: string };
-
-export const faqs: FaqItem[] = [
-  {
-    q: "Layihə üçün orta hazırlanma müddəti nə qədərdir?",
-    a: "Layihənin həcmindən asılı olaraq dəyişir. Sadə bir sayt (landing page) adətən 1-2 həftəyə, daha kompleks veb tətbiqlər isə 4-8 həftəyə hazır olur. Dəqiq müddəti ilkin görüşdən sonra sənə təqdim edirik.",
-  },
-  {
-    q: "Qiymətləndirmə necə aparılır?",
-    a: "Qiymət, layihənin funksionallığından, dizayn tələblərindən və inteqrasiya ehtiyaclarından asılı olaraq fərdi hesablanır. Pulsuz ilkin konsultasiya zamanı sənə təxmini büdcə təqdim edirik.",
-  },
-  {
-    q: "Hazır saytın dəstəyi (support) var?",
-    a: "Bəli. Təhvil verildikdən sonra da texniki dəstək, yeniləmələr və təhlükəsizlik yamaqları üçün aylıq dəstək paketlərimiz mövcuddur.",
-  },
-  {
-    q: "Hansı texnologiyalardan istifadə edirsiniz?",
-    a: "Əsasən Next.js, React, TypeScript və Tailwind CSS üzərində müasir, sürətli və SEO-dostu veb saytlar qururuq. Backend tərəfdə ehtiyaca görə Prisma və müxtəlif verilənlər bazası həllərindən istifadə edirik.",
-  },
-  {
-    q: "Mövcud saytımı yeniləmək mümkündürmü?",
-    a: "Əlbəttə. Mövcud saytınızı analiz edib, performans, dizayn və ya funksionallıq baxımından yeniləmə təklifləri hazırlaya bilərik.",
-  },
-  {
-    q: "Ödəniş şərtləri necədir?",
-    a: "Adətən layihə başlamazdan əvvəl qismən ön ödəniş, təhvil zamanı isə qalan hissə tələb olunur. Böyük layihələr üçün mərhələli ödəniş planı da təklif edirik.",
-  },
-];
-
-export default function FaqAccordion({ items = faqs }: { items?: FaqItem[] }) {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
-
-  return (
-    <div className="flex flex-col divide-y divide-line-light border-t border-b border-line-light">
-      {items.map((item, i) => {
-        const isOpen = openIndex === i;
-        return (
-          <div key={item.q}>
-            <button
-              onClick={() => setOpenIndex(isOpen ? null : i)}
-              className="w-full flex items-center justify-between gap-4 py-5 text-left group"
-            >
-              <span className="font-display text-base sm:text-lg text-graphite transition-colors duration-300 group-hover:text-accent">
-                {item.q}
-              </span>
-              <span
-                className={`shrink-0 w-8 h-8 rounded-full border border-line-light flex items-center justify-center text-accent transition-transform duration-300 ${
-                  isOpen ? "rotate-45" : ""
-                }`}
-              >
-                +
-              </span>
-            </button>
-            <div
-              className={`grid transition-all duration-300 ease-out ${
-                isOpen ? "grid-rows-[1fr] opacity-100 pb-6" : "grid-rows-[0fr] opacity-0"
-              }`}
-            >
-              <div className="overflow-hidden">
-                <p className="text-graphite/70 leading-relaxed max-w-2xl">{item.a}</p>
-              </div>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-</file>
-
-<file path="src/components/Logo.tsx">
-export default function Logo({
-  variant = "white",
-  className = "",
-}: {
-  variant?: "white" | "black";
-  className?: string;
-}) {
-  const src = variant === "white" ? "/logo-white.png" : "/logo-black.png";
-  return <img src={src} alt="Loomtra" className={`h-9 w-auto ${className}`} />;
-}
-</file>
 
 <file path="prisma/migrations/20260715131820_init/migration.sql">
 -- CreateTable
@@ -336,146 +228,6 @@ export default function About() {
 }
 </file>
 
-<file path="src/app/admin/login/page.tsx">
-"use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-
-export default function AdminLogin() {
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-    const res = await fetch("/api/admin/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
-    setLoading(false);
-    if (res.ok) {
-      router.push("/admin");
-      router.refresh();
-    } else {
-      setError("Şifrə yanlışdır");
-    }
-  }
-
-  return (
-    <div className="max-w-sm mx-auto py-24 px-4">
-      <h1 className="text-2xl font-bold mb-6">Admin Girişi</h1>
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Şifrə"
-          className="border p-2 w-full rounded"
-          required
-          autoFocus
-        />
-        {error && <p className="text-red-600 text-sm">{error}</p>}
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-ink text-paper px-4 py-2 rounded w-full transition-colors duration-300 hover:bg-accent disabled:opacity-50"
-        >
-          {loading ? "Yoxlanılır..." : "Daxil ol"}
-        </button>
-      </form>
-    </div>
-  );
-}
-</file>
-
-<file path="src/app/admin/page.tsx">
-import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
-
-async function addProject(formData: FormData) {
-  "use server";
-  await prisma.project.create({
-    data: {
-      title: formData.get("title") as string,
-      description: formData.get("description") as string,
-      imageUrl: formData.get("imageUrl") as string,
-      link: formData.get("link") as string,
-    },
-  });
-  revalidatePath("/admin");
-  revalidatePath("/projects");
-}
-
-async function deleteProject(formData: FormData) {
-  "use server";
-  const id = Number(formData.get("id"));
-  await prisma.project.delete({ where: { id } });
-  revalidatePath("/admin");
-  revalidatePath("/projects");
-}
-
-export default async function AdminDashboard() {
-  const projects = await prisma.project.findMany({
-    orderBy: { createdAt: "desc" },
-  });
-
-  return (
-    <div className="max-w-3xl mx-auto py-12 px-4">
-      <h1 className="text-2xl font-bold mb-6">Admin Panel</h1>
-
-      <form action={addProject} className="space-y-3 mb-10 border p-4 rounded">
-        <input
-          name="title"
-          placeholder="Başlıq"
-          className="border p-2 w-full"
-          required
-        />
-        <textarea
-          name="description"
-          placeholder="Təsvir"
-          className="border p-2 w-full"
-          required
-        />
-        <input
-          name="imageUrl"
-          placeholder="Şəkil URL (opsional)"
-          className="border p-2 w-full"
-        />
-        <input
-          name="link"
-          placeholder="Layihə linki (opsional)"
-          className="border p-2 w-full"
-        />
-        <button className="bg-ink text-paper px-4 py-2 rounded transition-colors duration-300 hover:bg-accent">
-          Əlavə et
-        </button>
-      </form>
-
-      <div className="space-y-3">
-        {projects.map((p) => (
-          <div
-            key={p.id}
-            className="flex justify-between items-center border p-3 rounded"
-          >
-            <span>{p.title}</span>
-            <form action={deleteProject}>
-              <input type="hidden" name="id" value={p.id} />
-              <button className="text-red-600 transition-colors duration-300 hover:text-red-400">
-                Sil
-              </button>
-            </form>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-</file>
-
 <file path="src/app/api/admin/login/route.ts">
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
@@ -511,6 +263,28 @@ export async function POST() {
 }
 </file>
 
+<file path="src/app/faq/page.tsx">
+import FadeIn from "@/components/FadeIn";
+import FaqAccordion from "@/components/FaqAccordion";
+
+export default function FAQ() {
+  return (
+    <section className="max-w-4xl mx-auto px-6 py-20">
+      <FadeIn>
+        <p className="font-mono text-xs tracking-widest text-accent uppercase mb-4">Suallar</p>
+        <h1 className="font-display text-3xl sm:text-4xl mb-4">Tez-tez verilən suallar</h1>
+        <p className="text-graphite/60 max-w-xl mb-12">
+          Ən çox soruşulan sualların cavablarını burada tapa bilərsən. Başqa sualın varsa,
+          bizimlə birbaşa əlaqə saxlaya bilərsən.
+        </p>
+      </FadeIn>
+
+      <FaqAccordion />
+    </section>
+  );
+}
+</file>
+
 <file path="src/app/projects/page.tsx">
 import { prisma } from "@/lib/prisma";
 import ProjectsGrid from "@/components/ProjectsGrid";
@@ -537,220 +311,6 @@ export default async function Projects() {
         <ProjectsGrid projects={projects} />
       )}
     </section>
-  );
-}
-</file>
-
-<file path="src/app/globals.css">
-@import "tailwindcss";
-
-:root {
-  --ink: #05080f;
-  --paper: #f5f8fc;
-  --graphite: #0d1826;
-  --accent: #2f6fed;
-  --accent-2: #1d4ed8;
-  --accent-3: #38bdf8;
-  --line: #17212f;
-  --line-light: #dde5f0;
-}
-@theme inline {
-  --color-ink: var(--ink);
-  --color-paper: var(--paper);
-  --color-graphite: var(--graphite);
-  --color-accent: var(--accent);
-  --color-accent-2: var(--accent-2);
-  --color-accent-3: var(--accent-3);
-  --color-line: var(--line);
-  --color-line-light: var(--line-light);
-  --font-display: var(--font-fraunces);
-  --font-body: var(--font-inter);
-  --font-mono: var(--font-plex-mono);
-}
-
-body {
-  background: var(--paper);
-  color: var(--graphite);
-  font-family: var(--font-body), sans-serif;
-}
-
-* {
-  scroll-behavior: smooth;
-}
-
-/* --- Animasiyalar --- */
-@keyframes blob {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(30px, -50px) scale(1.1); }
-  66% { transform: translate(-20px, 20px) scale(0.9); }
-}
-.animate-blob { animation: blob 12s infinite ease-in-out; }
-.animation-delay-2000 { animation-delay: 2s; }
-.animation-delay-4000 { animation-delay: 4s; }
-
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
-}
-.animate-float { animation: float 4s ease-in-out infinite; }
-
-@media (prefers-reduced-motion: reduce) {
-  * {
-    scroll-behavior: auto;
-    animation: none !important;
-    transition: none !important;
-  }
-}
-</file>
-
-<file path="src/app/layout.tsx">
-import type { Metadata } from "next";
-import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
-import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-plex-mono",
-  subsets: ["latin"],
-  weight: ["400", "500"],
-});
-
-export const metadata: Metadata = {
-  title: "Loomtra Web Technologies",
-  description: "Loomtra Web Technologies — rəqəmsal məhsul və veb həllər.",
-};
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html
-      lang="az"
-      className={`${fraunces.variable} ${inter.variable} ${plexMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">
-        <Navbar />
-        <div className="flex-1">{children}</div>
-        <Footer />
-      </body>
-    </html>
-  );
-}
-</file>
-
-<file path="src/app/page.tsx">
-import Link from "next/link";
-import { prisma } from "@/lib/prisma";
-import Hero from "@/components/Hero";
-import MarqueeText from "@/components/MarqueeText";
-import ProjectCarousel from "@/components/ProjectCarousel";
-import FadeIn from "@/components/FadeIn";
-import FaqAccordion, { faqs } from "@/components/FaqAccordion";
-
-export default async function Home() {
-  const projects = await prisma.project.findMany({
-    orderBy: { createdAt: "desc" },
-  });
-
-  return (
-    <>
-      <Hero />
-      <MarqueeText />
-
-      <section className="max-w-6xl mx-auto px-6 py-20">
-        <FadeIn>
-          <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
-            <div>
-              <p className="font-mono text-xs tracking-widest text-accent uppercase mb-3">
-                Seçilmiş işlər
-              </p>
-              <h2 className="font-display text-2xl sm:text-3xl">
-                Son layihələrimiz
-              </h2>
-            </div>
-            <Link
-              href="/projects"
-              className="text-sm text-graphite/60 hover:text-accent transition-colors"
-            >
-              Hamısına bax →
-            </Link>
-          </div>
-        </FadeIn>
-
-        {projects.length === 0 ? (
-          <p className="text-graphite/60 border border-line-light rounded-lg p-8 text-center">
-            Hələ heç bir layihə əlavə olunmayıb.
-          </p>
-        ) : (
-          <ProjectCarousel projects={projects} />
-        )}
-      </section>
-
-      <section className="bg-line-light/30 border-t border-line-light">
-        <div className="max-w-6xl mx-auto px-6 py-20 grid grid-cols-1 sm:grid-cols-3 gap-10">
-          {[
-            {
-              title: "Keyfiyyət",
-              desc: "Hər detala diqqət yetiririk, tələsik iş görmürük.",
-            },
-            {
-              title: "Şəffaflıq",
-              desc: "Prosesin hər addımında müştəri ilə açıq ünsiyyət.",
-            },
-            {
-              title: "Sürət",
-              desc: "Vaxtında təhvil, lazımsız gecikmə olmadan.",
-            },
-          ].map((item, i) => (
-            <FadeIn key={item.title} delay={i * 0.1}>
-              <h3 className="font-display text-xl mb-2">{item.title}</h3>
-              <p className="text-sm text-graphite/60">{item.desc}</p>
-            </FadeIn>
-          ))}
-        </div>
-      </section>
-
-      <section className="max-w-4xl mx-auto px-6 py-20 border-t border-line-light">
-        <FadeIn>
-          <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
-            <div>
-              <p className="font-mono text-xs tracking-widest text-accent uppercase mb-3">
-                Suallar
-              </p>
-              <h2 className="font-display text-2xl sm:text-3xl">
-                Tez-tez verilən suallar
-              </h2>
-            </div>
-            <Link
-              href="/faq"
-              className="text-sm text-graphite/60 hover:text-accent transition-colors"
-            >
-              Hamısına bax →
-            </Link>
-          </div>
-        </FadeIn>
-
-        <FaqAccordion items={faqs.slice(0, 4)} />
-      </section>
-    </>
   );
 }
 </file>
@@ -784,124 +344,64 @@ export default function FadeIn({
 }
 </file>
 
-<file path="src/components/Footer.tsx">
-import Logo from "./Logo";
+<file path="src/components/FaqAccordion.tsx">
+"use client";
+import { useState } from "react";
+import { faqs, type FaqItem } from "@/lib/faqs";
 
-export default function Footer() {
+export type { FaqItem };
+
+export default function FaqAccordion({ items = faqs }: { items?: FaqItem[] }) {
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+
   return (
-    <footer className="bg-ink border-t border-line">
-      <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col md:flex-row md:items-end justify-between gap-8">
-        <div className="flex items-center gap-3">
-          <Logo variant="white" />
-          <div>
-            <p className="font-display text-xl text-paper mb-1">
-              Loomtra Web Technologies
-            </p>
-            <p className="text-sm text-paper/60 max-w-sm">
-              Fikirlərdən nəticəyə — rəqəmsal məhsullar quraşdırırıq.
-            </p>
+    <div className="flex flex-col divide-y divide-line-light border-t border-b border-line-light">
+      {items.map((item, i) => {
+        const isOpen = openIndex === i;
+        return (
+          <div key={item.q}>
+            <button
+              onClick={() => setOpenIndex(isOpen ? null : i)}
+              className="w-full flex items-center justify-between gap-4 py-5 text-left group"
+            >
+              <span className="font-display text-base sm:text-lg text-graphite transition-colors duration-300 group-hover:text-accent">
+                {item.q}
+              </span>
+              <span
+                className={`shrink-0 w-8 h-8 rounded-full border border-line-light flex items-center justify-center text-accent transition-transform duration-300 ${
+                  isOpen ? "rotate-45" : ""
+                }`}
+              >
+                +
+              </span>
+            </button>
+            <div
+              className={`grid transition-all duration-300 ease-out ${
+                isOpen ? "grid-rows-[1fr] opacity-100 pb-6" : "grid-rows-[0fr] opacity-0"
+              }`}
+            >
+              <div className="overflow-hidden">
+                <p className="text-graphite/70 leading-relaxed max-w-2xl">{item.a}</p>
+              </div>
+            </div>
           </div>
-        </div>
-
-        <div className="flex flex-col gap-1 text-sm text-paper/60 md:text-right">
-          <a href="mailto:info@loomtra.az" className="transition-colors duration-300 hover:text-accent">
-            info@loomtra.az
-          </a>
-          <span>© {new Date().getFullYear()} Loomtra Web Technologies. Bütün hüquqlar qorunur.</span>
-        </div>
-      </div>
-    </footer>
+        );
+      })}
+    </div>
   );
 }
 </file>
 
-<file path="src/components/Hero.tsx">
-"use client";
-import Link from "next/link";
-import { motion } from "framer-motion";
-
-export default function Hero() {
-  return (
-    <section className="relative overflow-hidden bg-ink text-paper">
-      {/* Animasiyalı gradient "blob"lar */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-24 -left-24 w-96 h-96 bg-accent-2/30 rounded-full blur-3xl animate-blob" />
-        <div className="absolute top-1/3 -right-24 w-96 h-96 bg-accent-3/30 rounded-full blur-3xl animate-blob animation-delay-2000" />
-        <div className="absolute -bottom-24 left-1/3 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-blob animation-delay-4000" />
-      </div>
-
-      {
-      <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover opacity-30">
-        <source src="/videos/hero.mp4" type="video/mp4" />
-      </video>
-      */}
-
-      <div className="relative max-w-6xl mx-auto px-6 py-28 md:py-36">
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="font-mono text-xs tracking-widest text-accent uppercase mb-6"
-        >
-          Rəqəmsal Studiya
-        </motion.p>
-
-        <motion.h1
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1 }}
-          className="font-display text-4xl sm:text-5xl lg:text-7xl leading-[1.05] max-w-3xl mb-6"
-        >
-          Fikirləri{" "}
-          <span className="bg-gradient-to-r from-accent via-accent-3 to-accent-2 bg-clip-text text-transparent">
-            məhsula
-          </span>{" "}
-          çeviririk.
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-          className="text-paper/70 text-base sm:text-lg max-w-xl mb-10"
-        >
-          Konsepdən istehsala qədər rəqəmsal məhsullar quraşdırırıq. Aşağıda öz
-          işlərimizdən bir neçəsini tapa bilərsiniz.
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.3 }}
-          className="flex flex-wrap gap-4"
-        >
-          <Link
-            href="/projects"
-            className="bg-accent text-paper px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 hover:bg-accent-2 hover:scale-105"
-          >
-            Layihələrə bax
-          </Link>
-          <Link
-            href="/about"
-            className="border border-paper/30 text-paper px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 hover:bg-paper/10 hover:border-accent hover:text-accent hover:scale-105"
-          >
-            Haqqımızda
-          </Link>
-        </motion.div>
-      </div>
-
-      <motion.div
-        className="hidden lg:block absolute top-24 right-16 animate-float"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.5, duration: 0.6 }}
-      >
-        <div className="bg-paper/10 backdrop-blur border border-paper/20 rounded-2xl px-5 py-3 text-xs font-mono text-paper/80">
-          2024-dən bəri xidmətinizdə
-        </div>
-      </motion.div>
-    </section>
-  );
+<file path="src/components/Logo.tsx">
+export default function Logo({
+  variant = "white",
+  className = "",
+}: {
+  variant?: "white" | "black";
+  className?: string;
+}) {
+  const src = variant === "white" ? "/logo-white.png" : "/logo-black.png";
+  return <img src={src} alt="Loomtra" className={`h-9 w-auto ${className}`} />;
 }
 </file>
 
@@ -1021,90 +521,6 @@ export default function MarqueeText() {
 }
 </file>
 
-<file path="src/components/Navbar.tsx">
-"use client";
-import Link from "next/link";
-import { useState } from "react";
-import Logo from "./Logo";
-
-export default function Navbar() {
-  const [open, setOpen] = useState(false);
-
-  const links = [
-    { href: "/", label: "Ana Səhifə" },
-    { href: "/about", label: "Haqqımızda" },
-    { href: "/projects", label: "Layihələr" },
-    { href: "/faq", label: "FAQ" },
-  ];
-
-  return (
-    <header className="sticky top-0 z-50 bg-ink border-b border-line">
-      <nav className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
-        <Link href="/" className="flex items-center gap-3">
-          <Logo variant="white" />
-          <span className="flex flex-col leading-none">
-            <span className="font-display text-lg text-paper tracking-tight">
-              Loomtra
-            </span>
-            <span className="font-mono text-[10px] tracking-widest text-accent uppercase">
-              Web Technologies
-            </span>
-          </span>
-        </Link>
-
-        {/* Desktop menu */}
-        <div className="hidden md:flex items-center gap-8">
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className="group relative py-1 text-sm text-paper/80 hover:text-paper transition-colors duration-300"
-            >
-              {l.label}
-              <span className="absolute left-0 -bottom-0.5 h-[1.5px] w-full origin-left scale-x-0 bg-accent transition-transform duration-300 ease-out group-hover:scale-x-100" />
-            </Link>
-          ))}
-        </div>
-
-        {/* Mobile toggle */}
-        <button
-          onClick={() => setOpen(!open)}
-          className="md:hidden text-paper p-2 -mr-2 transition-colors duration-300 hover:text-accent"
-          aria-label="Menyunu aç/bağla"
-          aria-expanded={open}
-        >
-          {open ? (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M6 6l12 12M18 6L6 18" />
-            </svg>
-          ) : (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M4 7h16M4 12h16M4 17h16" />
-            </svg>
-          )}
-        </button>
-      </nav>
-
-      {/* Mobile menu panel */}
-      {open && (
-        <div className="md:hidden border-t border-line bg-ink px-6 py-4 flex flex-col gap-4">
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              onClick={() => setOpen(false)}
-              className="text-paper/90 text-base transition-colors duration-300 hover:text-accent"
-            >
-              {l.label}
-            </Link>
-          ))}
-        </div>
-      )}
-    </header>
-  );
-}
-</file>
-
 <file path="src/components/ProjectCarousel.tsx">
 import Marquee from "./Marquee";
 
@@ -1198,6 +614,37 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
     </div>
   );
 }
+</file>
+
+<file path="src/lib/faqs.ts">
+export type FaqItem = { q: string; a: string };
+
+export const faqs: FaqItem[] = [
+  {
+    q: "Layihə üçün orta hazırlanma müddəti nə qədərdir?",
+    a: "Layihənin həcmindən asılı olaraq dəyişir. Sadə bir sayt (landing page) adətən 1-2 həftəyə, daha kompleks veb tətbiqlər isə 4-8 həftəyə hazır olur. Dəqiq müddəti ilkin görüşdən sonra sənə təqdim edirik.",
+  },
+  {
+    q: "Qiymətləndirmə necə aparılır?",
+    a: "Qiymət, layihənin funksionallığından, dizayn tələblərindən və inteqrasiya ehtiyaclarından asılı olaraq fərdi hesablanır. Pulsuz ilkin konsultasiya zamanı sənə təxmini büdcə təqdim edirik.",
+  },
+  {
+    q: "Hazır saytın dəstəyi (support) var?",
+    a: "Bəli. Təhvil verildikdən sonra da texniki dəstək, yeniləmələr və təhlükəsizlik yamaqları üçün aylıq dəstək paketlərimiz mövcuddur.",
+  },
+  {
+    q: "Hansı texnologiyalardan istifadə edirsiniz?",
+    a: "Əsasən Next.js, React, TypeScript və Tailwind CSS üzərində müasir, sürətli və SEO-dostu veb saytlar qururuq. Backend tərəfdə ehtiyaca görə Prisma və müxtəlif verilənlər bazası həllərindən istifadə edirik.",
+  },
+  {
+    q: "Mövcud saytımı yeniləmək mümkündürmü?",
+    a: "Əlbəttə. Mövcud saytınızı analiz edib, performans, dizayn və ya funksionallıq baxımından yeniləmə təklifləri hazırlaya bilərik.",
+  },
+  {
+    q: "Ödəniş şərtləri necədir?",
+    a: "Adətən layihə başlamazdan əvvəl qismən ön ödəniş, təhvil zamanı isə qalan hissə tələb olunur. Böyük layihələr üçün mərhələli ödəniş planı da təklif edirik.",
+  },
+];
 </file>
 
 <file path="src/lib/prisma.ts">
@@ -1354,6 +801,476 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 </file>
 
+<file path="src/app/admin/login/page.tsx">
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+export default function AdminLogin() {
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    const res = await fetch("/api/admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password }),
+    });
+    setLoading(false);
+    if (res.ok) {
+      router.push("/admin");
+      router.refresh();
+    } else {
+      setError("Şifrə yanlışdır");
+    }
+  }
+
+  return (
+    <div className="max-w-sm mx-auto py-24 px-4">
+      <h1 className="text-2xl font-bold mb-6">Admin Girişi</h1>
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Şifrə"
+          className="border p-2 w-full rounded"
+          required
+          autoFocus
+        />
+        {error && <p className="text-red-600 text-sm">{error}</p>}
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-ink text-paper px-4 py-2 rounded w-full transition-colors duration-300 hover:bg-accent disabled:opacity-50"
+        >
+          {loading ? "Yoxlanılır..." : "Daxil ol"}
+        </button>
+      </form>
+    </div>
+  );
+}
+</file>
+
+<file path="src/app/admin/page.tsx">
+import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
+
+async function addProject(formData: FormData) {
+  "use server";
+  await prisma.project.create({
+    data: {
+      title: formData.get("title") as string,
+      description: formData.get("description") as string,
+      imageUrl: formData.get("imageUrl") as string,
+      link: formData.get("link") as string,
+    },
+  });
+  revalidatePath("/admin");
+  revalidatePath("/projects");
+}
+
+async function deleteProject(formData: FormData) {
+  "use server";
+  const id = Number(formData.get("id"));
+  await prisma.project.delete({ where: { id } });
+  revalidatePath("/admin");
+  revalidatePath("/projects");
+}
+
+export default async function AdminDashboard() {
+  const projects = await prisma.project.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+
+  return (
+    <div className="max-w-3xl mx-auto py-12 px-4">
+      <h1 className="text-2xl font-bold mb-6">Admin Panel</h1>
+
+      <form action={addProject} className="space-y-3 mb-10 border p-4 rounded">
+        <input
+          name="title"
+          placeholder="Başlıq"
+          className="border p-2 w-full"
+          required
+        />
+        <textarea
+          name="description"
+          placeholder="Təsvir"
+          className="border p-2 w-full"
+          required
+        />
+        <input
+          name="imageUrl"
+          placeholder="Şəkil URL (opsional)"
+          className="border p-2 w-full"
+        />
+        <input
+          name="link"
+          placeholder="Layihə linki (opsional)"
+          className="border p-2 w-full"
+        />
+        <button className="bg-ink text-paper px-4 py-2 rounded transition-colors duration-300 hover:bg-accent">
+          Əlavə et
+        </button>
+      </form>
+
+      <div className="space-y-3">
+        {projects.map((p) => (
+          <div
+            key={p.id}
+            className="flex justify-between items-center border p-3 rounded"
+          >
+            <span>{p.title}</span>
+            <form action={deleteProject}>
+              <input type="hidden" name="id" value={p.id} />
+              <button className="text-red-600 transition-colors duration-300 hover:text-red-400">
+                Sil
+              </button>
+            </form>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/app/globals.css">
+@import "tailwindcss";
+
+:root {
+  --ink: #05080f;
+  --paper: #f5f8fc;
+  --graphite: #0d1826;
+  --accent: #2f6fed;
+  --accent-2: #1d4ed8;
+  --accent-3: #38bdf8;
+  --line: #17212f;
+  --line-light: #dde5f0;
+}
+@theme inline {
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-graphite: var(--graphite);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-3: var(--accent-3);
+  --color-line: var(--line);
+  --color-line-light: var(--line-light);
+  --font-display: var(--font-fraunces);
+  --font-body: var(--font-inter);
+  --font-mono: var(--font-plex-mono);
+}
+
+body {
+  background: var(--paper);
+  color: var(--graphite);
+  font-family: var(--font-body), sans-serif;
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+/* --- Animasiyalar --- */
+@keyframes blob {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+}
+.animate-blob { animation: blob 12s infinite ease-in-out; }
+.animation-delay-2000 { animation-delay: 2s; }
+.animation-delay-4000 { animation-delay: 4s; }
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.animate-float { animation: float 4s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto;
+    animation: none !important;
+    transition: none !important;
+  }
+}
+</file>
+
+<file path="src/app/layout.tsx">
+import type { Metadata } from "next";
+import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
+import "./globals.css";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+});
+
+export const metadata: Metadata = {
+  title: "Loomtra Web Technologies",
+  description: "Loomtra Web Technologies — rəqəmsal məhsul və veb həllər.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="az"
+      className={`${fraunces.variable} ${inter.variable} ${plexMono.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col">
+        <Navbar />
+        <div className="flex-1">{children}</div>
+        <Footer />
+      </body>
+    </html>
+  );
+}
+</file>
+
+<file path="src/app/page.tsx">
+import Link from "next/link";
+import { prisma } from "@/lib/prisma";
+import Hero from "@/components/Hero";
+import MarqueeText from "@/components/MarqueeText";
+import ProjectCarousel from "@/components/ProjectCarousel";
+import FadeIn from "@/components/FadeIn";
+import FaqAccordion from "@/components/FaqAccordion";
+import { faqs } from "@/lib/faqs";
+
+export default async function Home() {
+  const projects = await prisma.project.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+
+  return (
+    <>
+      <Hero />
+      <MarqueeText />
+
+      <section className="max-w-6xl mx-auto px-6 py-20">
+        <FadeIn>
+          <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
+            <div>
+              <p className="font-mono text-xs tracking-widest text-accent uppercase mb-3">
+                Seçilmiş işlər
+              </p>
+              <h2 className="font-display text-2xl sm:text-3xl">
+                Son layihələrimiz
+              </h2>
+            </div>
+            <Link
+              href="/projects"
+              className="text-sm text-graphite/60 hover:text-accent transition-colors"
+            >
+              Hamısına bax →
+            </Link>
+          </div>
+        </FadeIn>
+
+        {projects.length === 0 ? (
+          <p className="text-graphite/60 border border-line-light rounded-lg p-8 text-center">
+            Hələ heç bir layihə əlavə olunmayıb.
+          </p>
+        ) : (
+          <ProjectCarousel projects={projects} />
+        )}
+      </section>
+
+      <section className="bg-line-light/30 border-t border-line-light">
+        <div className="max-w-6xl mx-auto px-6 py-20 grid grid-cols-1 sm:grid-cols-3 gap-10">
+          {[
+            {
+              title: "Keyfiyyət",
+              desc: "Hər detala diqqət yetiririk, tələsik iş görmürük.",
+            },
+            {
+              title: "Şəffaflıq",
+              desc: "Prosesin hər addımında müştəri ilə açıq ünsiyyət.",
+            },
+            {
+              title: "Sürət",
+              desc: "Vaxtında təhvil, lazımsız gecikmə olmadan.",
+            },
+          ].map((item, i) => (
+            <FadeIn key={item.title} delay={i * 0.1}>
+              <h3 className="font-display text-xl mb-2">{item.title}</h3>
+              <p className="text-sm text-graphite/60">{item.desc}</p>
+            </FadeIn>
+          ))}
+        </div>
+      </section>
+
+      <section className="max-w-4xl mx-auto px-6 py-20 border-t border-line-light">
+        <FadeIn>
+          <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
+            <div>
+              <p className="font-mono text-xs tracking-widest text-accent uppercase mb-3">
+                Suallar
+              </p>
+              <h2 className="font-display text-2xl sm:text-3xl">
+                Tez-tez verilən suallar
+              </h2>
+            </div>
+            <Link
+              href="/faq"
+              className="text-sm text-graphite/60 hover:text-accent transition-colors"
+            >
+              Hamısına bax →
+            </Link>
+          </div>
+        </FadeIn>
+
+        <FaqAccordion items={faqs.slice(0, 4)} />
+      </section>
+    </>
+  );
+}
+</file>
+
+<file path="src/components/Footer.tsx">
+import Logo from "./Logo";
+
+export default function Footer() {
+  return (
+    <footer className="bg-ink border-t border-line">
+      <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <div className="flex items-center gap-3">
+          <Logo variant="white" />
+          <div>
+            <p className="font-display text-xl text-paper mb-1">
+              Loomtra Web Technologies
+            </p>
+            <p className="text-sm text-paper/60 max-w-sm">
+              Fikirlərdən nəticəyə — rəqəmsal məhsullar quraşdırırıq.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1 text-sm text-paper/60 md:text-right">
+          <a href="mailto:info@loomtra.az" className="transition-colors duration-300 hover:text-accent">
+            info@loomtra.az
+          </a>
+          <span>© {new Date().getFullYear()} Loomtra Web Technologies. Bütün hüquqlar qorunur.</span>
+        </div>
+      </div>
+    </footer>
+  );
+}
+</file>
+
+<file path="src/components/Navbar.tsx">
+"use client";
+import Link from "next/link";
+import { useState } from "react";
+import Logo from "./Logo";
+
+export default function Navbar() {
+  const [open, setOpen] = useState(false);
+
+  const links = [
+    { href: "/", label: "Ana Səhifə" },
+    { href: "/about", label: "Haqqımızda" },
+    { href: "/projects", label: "Layihələr" },
+    { href: "/faq", label: "FAQ" },
+  ];
+
+  return (
+    <header className="sticky top-0 z-50 bg-ink border-b border-line">
+      <nav className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
+        <Link href="/" className="flex items-center gap-3">
+          <Logo variant="white" />
+          <span className="flex flex-col leading-none">
+            <span className="font-display text-lg text-paper tracking-tight">
+              Loomtra
+            </span>
+            <span className="font-mono text-[10px] tracking-widest text-accent uppercase">
+              Web Technologies
+            </span>
+          </span>
+        </Link>
+
+        {/* Desktop menu */}
+        <div className="hidden md:flex items-center gap-8">
+          {links.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              className="group relative py-1 text-sm text-paper/80 hover:text-paper transition-colors duration-300"
+            >
+              {l.label}
+              <span className="absolute left-0 -bottom-0.5 h-[1.5px] w-full origin-left scale-x-0 bg-accent transition-transform duration-300 ease-out group-hover:scale-x-100" />
+            </Link>
+          ))}
+        </div>
+
+        {/* Mobile toggle */}
+        <button
+          onClick={() => setOpen(!open)}
+          className="md:hidden text-paper p-2 -mr-2 transition-colors duration-300 hover:text-accent"
+          aria-label="Menyunu aç/bağla"
+          aria-expanded={open}
+        >
+          {open ? (
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          ) : (
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M4 7h16M4 12h16M4 17h16" />
+            </svg>
+          )}
+        </button>
+      </nav>
+
+      {/* Mobile menu panel */}
+      {open && (
+        <div className="md:hidden border-t border-line bg-ink px-6 py-4 flex flex-col gap-4">
+          {links.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              onClick={() => setOpen(false)}
+              className="text-paper/90 text-base transition-colors duration-300 hover:text-accent"
+            >
+              {l.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </header>
+  );
+}
+</file>
+
 <file path=".gitignore">
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
@@ -1400,40 +1317,6 @@ next-env.d.ts
 /app/generated/prisma
 </file>
 
-<file path="package.json">
-{
-  "name": "company-site",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
-  },
-  "dependencies": {
-    "@prisma/client": "^5.22.0",
-    "bcryptjs": "^3.0.3",
-    "framer-motion": "^12.42.2",
-    "next": "^16.2.11",
-    "prisma": "^5.22.0",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/bcryptjs": "^2.4.6",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.10",
-    "tailwindcss": "^4",
-    "typescript": "^5"
-  }
-}
-</file>
-
 <file path="tsconfig.json">
 {
   "compilerOptions": {
@@ -1468,6 +1351,134 @@ next-env.d.ts
     "**/*.mts"
   ],
   "exclude": ["node_modules"]
+}
+</file>
+
+<file path="src/components/Hero.tsx">
+"use client";
+import Link from "next/link";
+import { motion } from "framer-motion";
+
+export default function Hero() {
+  return (
+    <section className="relative overflow-hidden bg-ink text-paper">
+      {/* Animasiyalı gradient "blob"lar */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-accent-2/30 rounded-full blur-3xl animate-blob" />
+        <div className="absolute top-1/3 -right-24 w-96 h-96 bg-accent-3/30 rounded-full blur-3xl animate-blob animation-delay-2000" />
+        <div className="absolute -bottom-24 left-1/3 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-blob animation-delay-4000" />
+      </div>
+
+      {/* İstəsən öz videonu bura qoya bilərsən:
+          1) videonu public/videos/hero.mp4 yerinə qoy
+          2) aşağıdakı şərhi (comment) sil */}
+      {/*
+      <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover opacity-30">
+        <source src="/videos/hero.mp4" type="video/mp4" />
+      </video>
+      */}
+
+      <div className="relative max-w-6xl mx-auto px-6 py-28 md:py-36">
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="font-mono text-xs tracking-widest text-accent uppercase mb-6"
+        >
+          Rəqəmsal Studiya
+        </motion.p>
+
+        <motion.h1
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.1 }}
+          className="font-display text-4xl sm:text-5xl lg:text-7xl leading-[1.05] max-w-3xl mb-6"
+        >
+          Fikirləri{" "}
+          <span className="bg-gradient-to-r from-accent via-accent-3 to-accent-2 bg-clip-text text-transparent">
+            məhsula
+          </span>{" "}
+          çeviririk.
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.2 }}
+          className="text-paper/70 text-base sm:text-lg max-w-xl mb-10"
+        >
+          Konsepdən istehsala qədər rəqəmsal məhsullar quraşdırırıq. Aşağıda öz
+          işlərimizdən bir neçəsini tapa bilərsiniz.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.3 }}
+          className="flex flex-wrap gap-4"
+        >
+          <Link
+            href="/projects"
+            className="bg-accent text-paper px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 hover:bg-accent-2 hover:scale-105"
+          >
+            Layihələrə bax
+          </Link>
+          <Link
+            href="/about"
+            className="border border-paper/30 text-paper px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 hover:bg-paper/10 hover:border-accent hover:text-accent hover:scale-105"
+          >
+            Haqqımızda
+          </Link>
+        </motion.div>
+      </div>
+
+      <motion.div
+        className="hidden lg:block absolute top-24 right-16 animate-float"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.5, duration: 0.6 }}
+      >
+        <div className="bg-paper/10 backdrop-blur border border-paper/20 rounded-2xl px-5 py-3 text-xs font-mono text-paper/80">
+          ✦ 2024-dən bəri xidmətinizdə
+        </div>
+      </motion.div>
+    </section>
+  );
+}
+</file>
+
+<file path="package.json">
+{
+  "name": "company-site",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "eslint",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "bcryptjs": "^3.0.3",
+    "framer-motion": "^12.42.2",
+    "next": "^16.2.11",
+    "prisma": "^5.22.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.10",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
 }
 </file>
 
