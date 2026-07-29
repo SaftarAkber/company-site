@@ -82,7 +82,7 @@ export default function Hero() {
         transition={{ delay: 0.5, duration: 0.6 }}
       >
         <div className="bg-paper/10 backdrop-blur border border-paper/20 rounded-2xl px-5 py-3 text-xs font-mono text-paper/80">
-          ✦ 2024-dən bəri
+          ✦ 2024-dən bəri xidmətinizdə
         </div>
       </motion.div>
     </section>
