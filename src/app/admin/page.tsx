@@ -13,6 +13,7 @@ async function addProject(formData: FormData) {
   });
   revalidatePath("/admin");
   revalidatePath("/projects");
+  revalidatePath("/");
 }
 
 async function deleteProject(formData: FormData) {
@@ -21,6 +22,7 @@ async function deleteProject(formData: FormData) {
   await prisma.project.delete({ where: { id } });
   revalidatePath("/admin");
   revalidatePath("/projects");
+  revalidatePath("/");
 }
 
 export default async function AdminDashboard() {
